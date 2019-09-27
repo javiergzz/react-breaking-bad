@@ -1,25 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import 'antd/dist/antd.css';
+import 'antd/dist/antd.js';
+import { Result, Button } from 'antd';
+import axios from 'axios';
 import logo from './logo.svg';
-import './App.css';
+
 
 function App() {
+
+  const [phrase, getPhrase] = useState({});
+
+  const callAPI = async () => {
+    const result = await axios('https://breaking-bad-quotes.herokuapp.com/v1/quotes');
+    getPhrase(result.data[0]);
+  }
+
+  useEffect(
+    () => {
+      callAPI()
+    }, []
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Result
+      icon={<img src={logo}/>}
+      title={phrase.quote}
+      subTitle={phrase.author}
+      extra={<Button type="primary" onClick={callAPI}>Get another quote</Button>}
+    />
   );
 }
 
